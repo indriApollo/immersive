@@ -5,7 +5,7 @@ import re
 
 class LPD8806:
 
-	spidev = "spidev" #"/dev/spidev0.0"
+	spidev = "/dev/spidev0.0"
 
 	def __init__(self,nLeds):
 

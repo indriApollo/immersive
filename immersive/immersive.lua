@@ -1,6 +1,6 @@
 -- IMMERSIVE
-local BASEURL = "http://localhost:8000/"
-local STEP = 0.5
+local BASEURL = "http://192.168.0.14:8000/"
+local STEP = 0.1
 
 immersive.colors = "pixels"
 immersive.player = false
@@ -120,7 +120,9 @@ immersive.step = function()
 
 	local p = immersive.pointsFromAngle(x,y,yawRad,6)
 	immersive.bresenham(p.x0,p.y0,p.x1,p.y1,z)
-	immersive.httpGET(immersive.colors,function()
+	immersive.httpGET(immersive.colors,function(res)
+		local t = tonumber(minetest.parse_json(res.data).brightness) > 5000 and 0 or 0.5
+		minetest.set_timeofday(t)
 		print("++Step completed in "..(minetest.get_us_time()-perf).."us++")
 	end)
 	minetest.after(STEP,immersive.step)
@@ -130,7 +132,6 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 	if immersive.player and
 		player:get_player_name() == immersive.player:get_player_name() and
 			hp_change < 0 then
-		print("player hurt")
 		immersive.httpGET("hurt", function()
 			print("player hurt")
 		end)
